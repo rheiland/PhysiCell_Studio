@@ -1,0 +1,2 @@
+/usr/bin/ar qc libCoreFunctions.a CMakeFiles/CoreFunctions.dir/PhysiCell_basic_signaling.cpp.o CMakeFiles/CoreFunctions.dir/PhysiCell_cell.cpp.o CMakeFiles/CoreFunctions.dir/PhysiCell_cell_container.cpp.o CMakeFiles/CoreFunctions.dir/PhysiCell_constants.cpp.o CMakeFiles/CoreFunctions.dir/PhysiCell_custom.cpp.o CMakeFiles/CoreFunctions.dir/PhysiCell_digital_cell_line.cpp.o CMakeFiles/CoreFunctions.dir/PhysiCell_phenotype.cpp.o CMakeFiles/CoreFunctions.dir/PhysiCell_standard_models.cpp.o CMakeFiles/CoreFunctions.dir/PhysiCell_utilities.cpp.o
+/usr/bin/ranlib libCoreFunctions.a

@@ -1,0 +1,10 @@
+// the configured options and settings 
+#define PhysiCell_VERSION_MAJOR @PhysiCell_VERSION_MAJOR@
+#define PhysiCell_VERSION_MINOR @PhysiCell_VERSION_MINOR@
+#define PhysiCell_VERSION_PATCH @PhysiCell_VERSION_PATCH@
+
+//#cmakedefine USE_MYMATH
+
+// does the platform provide exp and log functions?
+//#cmakedefine HAVE_LOG
+//#cmakedefine HAVE_EXP

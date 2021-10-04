@@ -1,0 +1,2 @@
+/usr/bin/ar qc libCustomModulesFunctions.a CMakeFiles/CustomModulesFunctions.dir/mymodel.cpp.o
+/usr/bin/ranlib libCustomModulesFunctions.a

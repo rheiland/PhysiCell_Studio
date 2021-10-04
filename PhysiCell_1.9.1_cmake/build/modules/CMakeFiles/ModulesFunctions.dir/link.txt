@@ -1,0 +1,2 @@
+/usr/bin/ar qc libModulesFunctions.a CMakeFiles/ModulesFunctions.dir/PhysiCell_MultiCellDS.cpp.o CMakeFiles/ModulesFunctions.dir/PhysiCell_pathology.cpp.o CMakeFiles/ModulesFunctions.dir/PhysiCell_POV.cpp.o CMakeFiles/ModulesFunctions.dir/PhysiCell_various_outputs.cpp.o CMakeFiles/ModulesFunctions.dir/PhysiCell_settings.cpp.o CMakeFiles/ModulesFunctions.dir/PhysiCell_SVG.cpp.o
+/usr/bin/ranlib libModulesFunctions.a
