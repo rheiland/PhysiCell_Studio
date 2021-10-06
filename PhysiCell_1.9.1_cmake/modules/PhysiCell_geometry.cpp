@@ -260,7 +260,7 @@ void load_cells_csv( std::string filename )
 		else
 		{
 			std::cout << "Warning! No cell definition found for index " << my_type << "!" << std::endl
-			<< "\tIgnoring cell in " << filename << " at position " << position << std::endl; 
+			<< "\tIgnoring cell in " << filename << " at position " << position[0] <<", "<<position[1]<<", " <<position[2] << std::endl; 
 		}
 
 	}
