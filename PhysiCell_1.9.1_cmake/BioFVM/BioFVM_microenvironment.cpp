@@ -270,7 +270,7 @@ void Microenvironment::apply_dirichlet_conditions( void )
 	*/
 
 	#pragma omp parallel for 
-	for( unsigned int i=0 ; i < mesh.voxels.size() ;i++ )
+	for( int i=0 ; i < mesh.voxels.size() ;i++ )
 	{
 		/*
 		if( mesh.voxels[i].is_Dirichlet == true )
@@ -856,7 +856,7 @@ void Microenvironment::simulate_bulk_sources_and_sinks( double dt )
 	}
 	
 	#pragma omp parallel for
-	for( unsigned int i=0; i < mesh.voxels.size() ; i++ )
+	for( int i=0; i < mesh.voxels.size() ; i++ )
 	{
 		bulk_supply_rate_function( this,i, &bulk_source_sink_solver_temp1[i] ); // temp1 = S
 		bulk_supply_target_densities_function( this,i, &bulk_source_sink_solver_temp2[i]); // temp2 = T
@@ -878,7 +878,7 @@ void Microenvironment::simulate_bulk_sources_and_sinks( double dt )
 void Microenvironment::simulate_cell_sources_and_sinks( std::vector<Basic_Agent*>& basic_agent_list , double dt )
 {
 	#pragma omp parallel for
-	for( unsigned int i=0 ; i < basic_agent_list.size() ; i++ )
+	for( int i=0 ; i < basic_agent_list.size() ; i++ )
 	{		
 		basic_agent_list[i]->simulate_secretion_and_uptake( this , dt ); 
 	}
@@ -903,7 +903,7 @@ void Microenvironment::update_rates( void )
 	{ uptake_rates.assign( number_of_voxels() , zero ); }
 
 	#pragma omp parallel for 
-	for( unsigned int i=0 ; i < number_of_voxels() ; i++ )
+	for( int i=0 ; i < number_of_voxels() ; i++ )
 	{
 		bulk_uptake_rate_function( this,i, &(uptake_rates[i]) ); 		
 		bulk_supply_rate_function( this,i, &(supply_rates[i]) ); 		
@@ -974,12 +974,12 @@ void Microenvironment::compute_all_gradient_vectors( void )
 	}
 	
 	#pragma omp parallel for 
-	for( unsigned int k=0; k < mesh.z_coordinates.size() ; k++ )
+	for( int k=0; k < mesh.z_coordinates.size() ; k++ )
 	{
-		for( unsigned int j=0; j < mesh.y_coordinates.size() ; j++ )
+		for( int j=0; j < mesh.y_coordinates.size() ; j++ )
 		{
 			// endcaps 
-			for( unsigned int q=0; q < number_of_densities() ; q++ )
+			for( int q=0; q < number_of_densities() ; q++ )
 			{
 				int i = 0; 
 				int n = voxel_index(i,j,k);
@@ -990,7 +990,7 @@ void Microenvironment::compute_all_gradient_vectors( void )
 				
 				gradient_vector_computed[n] = true; 
 			}
-			for( unsigned int q=0; q < number_of_densities() ; q++ )
+			for( int q=0; q < number_of_densities() ; q++ )
 			{
 				int i = mesh.x_coordinates.size()-1; 
 				int n = voxel_index(i,j,k);
@@ -1002,9 +1002,9 @@ void Microenvironment::compute_all_gradient_vectors( void )
 				gradient_vector_computed[n] = true; 
 			}
 			
-			for( unsigned int i=1; i < mesh.x_coordinates.size()-1 ; i++ )
+			for( int i=1; i < mesh.x_coordinates.size()-1 ; i++ )
 			{
-				for( unsigned int q=0; q < number_of_densities() ; q++ )
+				for( int q=0; q < number_of_densities() ; q++ )
 				{
 					int n = voxel_index(i,j,k);
 					// x-derivative of qth substrate at voxel n
@@ -1020,12 +1020,12 @@ void Microenvironment::compute_all_gradient_vectors( void )
 	}
 	
 	#pragma omp parallel for 
-	for( unsigned int k=0; k < mesh.z_coordinates.size() ; k++ )
+	for( int k=0; k < mesh.z_coordinates.size() ; k++ )
 	{
-		for( unsigned int i=0; i < mesh.x_coordinates.size() ; i++ )
+		for( int i=0; i < mesh.x_coordinates.size() ; i++ )
 		{
 			// endcaps 
-			for( unsigned int q=0; q < number_of_densities() ; q++ )
+			for( int q=0; q < number_of_densities() ; q++ )
 			{
 				int j = 0; 
 				int n = voxel_index(i,j,k);
@@ -1036,7 +1036,7 @@ void Microenvironment::compute_all_gradient_vectors( void )
 				
 				gradient_vector_computed[n] = true; 
 			}
-			for( unsigned int q=0; q < number_of_densities() ; q++ )
+			for( int q=0; q < number_of_densities() ; q++ )
 			{
 				int j = mesh.y_coordinates.size()-1; 
 				int n = voxel_index(i,j,k);
@@ -1048,9 +1048,9 @@ void Microenvironment::compute_all_gradient_vectors( void )
 				gradient_vector_computed[n] = true; 
 			}		
 			
-			for( unsigned int j=1; j < mesh.y_coordinates.size()-1 ; j++ )
+			for( int j=1; j < mesh.y_coordinates.size()-1 ; j++ )
 			{
-				for( unsigned int q=0; q < number_of_densities() ; q++ )
+				for( int q=0; q < number_of_densities() ; q++ )
 				{
 					int n = voxel_index(i,j,k);
 					// y-derivative of qth substrate at voxel n
@@ -1069,12 +1069,12 @@ void Microenvironment::compute_all_gradient_vectors( void )
 	{ return; }
 
 	#pragma omp parallel for 
-	for( unsigned int j=0; j < mesh.y_coordinates.size() ; j++ )
+	for( int j=0; j < mesh.y_coordinates.size() ; j++ )
 	{
-		for( unsigned int i=0; i < mesh.x_coordinates.size() ; i++ )
+		for( int i=0; i < mesh.x_coordinates.size() ; i++ )
 		{
 			// endcaps 
-			for( unsigned int q=0; q < number_of_densities() ; q++ )
+			for( int q=0; q < number_of_densities() ; q++ )
 			{
 				int k = 0; 
 				int n = voxel_index(i,j,k);
@@ -1085,7 +1085,7 @@ void Microenvironment::compute_all_gradient_vectors( void )
 				
 				gradient_vector_computed[n] = true; 
 			}
-			for( unsigned int q=0; q < number_of_densities() ; q++ )
+			for( int q=0; q < number_of_densities() ; q++ )
 			{
 				int k = mesh.z_coordinates.size()-1; 
 				int n = voxel_index(i,j,k);
@@ -1097,9 +1097,9 @@ void Microenvironment::compute_all_gradient_vectors( void )
 				gradient_vector_computed[n] = true; 
 			}			
 			
-			for( unsigned int k=1; k < mesh.z_coordinates.size()-1 ; k++ )
+			for( int k=1; k < mesh.z_coordinates.size()-1 ; k++ )
 			{
-				for( unsigned int q=0; q < number_of_densities() ; q++ )
+				for( int q=0; q < number_of_densities() ; q++ )
 				{
 					int n = voxel_index(i,j,k);
 					// y-derivative of qth substrate at voxel n
