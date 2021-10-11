@@ -37,13 +37,23 @@ class RunModel(QWidget):
         #------------------
         hbox = QHBoxLayout()
 
-        self.run_button = QPushButton("Run")
+        self.run_button = QPushButton("Run Simulation")
         hbox.addWidget(self.run_button)
         self.run_button.clicked.connect(self.run_model_cb)
 
-        self.cancel_button = QPushButton("Cancel")
-        hbox.addWidget(self.cancel_button)
+        # self.cancel_button = QPushButton("Cancel")
+        # hbox.addWidget(self.cancel_button)
         # self.new_button.clicked.connect(self.append_more_cb)
+
+        hbox.addWidget(QLabel("Exec:"))
+        self.exec_name = QLineEdit()
+        self.exec_name.setText('mymodel')
+        hbox.addWidget(self.exec_name)
+
+        hbox.addWidget(QLabel("Config:"))
+        self.config_xml_name = QLineEdit()
+        self.config_xml_name.setText('mymodel.xml')
+        hbox.addWidget(self.config_xml_name)
 
         # self.vbox.addStretch()
 
@@ -80,7 +90,10 @@ class RunModel(QWidget):
             self.p.readyReadStandardError.connect(self.handle_stderr)
             self.p.stateChanged.connect(self.handle_state)
             self.p.finished.connect(self.process_finished)  # Clean up once complete.
-            self.p.start("mymodel", ['biobots.xml'])
+            # self.p.start("mymodel", ['biobots.xml'])
+            exec_str = self.exec_name.text()
+            xml_str = self.config_xml_name.text()
+            self.p.start(exec_str, [xml_str])
 
     def handle_stderr(self):
         data = self.p.readAllStandardError()
