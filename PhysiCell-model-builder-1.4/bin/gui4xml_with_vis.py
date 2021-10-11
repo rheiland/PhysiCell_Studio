@@ -25,6 +25,7 @@ from cell_def_tab import CellDef
 from cell_custom_data_tab import CellCustomData 
 from microenv_tab import SubstrateDef 
 from user_params_tab import UserParams 
+from run_tab import RunModel 
 # from sbml_tab import SBMLParams 
 from vis_tab import Vis 
 
@@ -150,6 +151,8 @@ class PhysiCellXMLCreator(QWidget):
         # self.sbml_tab.xml_root = self.xml_root
         # self.sbml_tab.fill_gui()
 
+        self.run_tab = RunModel()
+
         #------------------
         tabWidget = QTabWidget()
         tabWidget.addTab(self.config_tab,"Config Basics")
@@ -157,6 +160,7 @@ class PhysiCellXMLCreator(QWidget):
         tabWidget.addTab(self.celldef_tab,"Cell Types")
         tabWidget.addTab(self.cell_customdata_tab,"Cell Custom Data")
         tabWidget.addTab(self.user_params_tab,"User Params")
+        tabWidget.addTab(self.run_tab,"Run")
         if show_vis_flag:
             self.vis_tab = Vis()
             # self.vis_tab.xml_root = self.xml_root
