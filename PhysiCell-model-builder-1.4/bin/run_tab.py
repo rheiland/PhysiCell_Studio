@@ -38,8 +38,14 @@ class RunModel(QWidget):
         hbox = QHBoxLayout()
 
         self.run_button = QPushButton("Run Simulation")
+        self.run_button.setStyleSheet("background-color: green")
         hbox.addWidget(self.run_button)
         self.run_button.clicked.connect(self.run_model_cb)
+
+        self.cancel_button = QPushButton("Cancel")
+        self.cancel_button.setStyleSheet("background-color: red")
+        hbox.addWidget(self.cancel_button)
+        self.cancel_button.clicked.connect(self.cancel_model_cb)
 
         # self.cancel_button = QPushButton("Cancel")
         # hbox.addWidget(self.cancel_button)
@@ -94,6 +100,11 @@ class RunModel(QWidget):
             exec_str = self.exec_name.text()
             xml_str = self.config_xml_name.text()
             self.p.start(exec_str, [xml_str])
+
+    def cancel_model_cb(self):
+        print("===========  cancel_model_cb():  ============")
+        if self.p:  # process running.
+            self.p.kill()
 
     def handle_stderr(self):
         data = self.p.readAllStandardError()
