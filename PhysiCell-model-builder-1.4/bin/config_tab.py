@@ -9,7 +9,7 @@ Dr. Paul Macklin (macklinp@iu.edu)
 """
 
 import sys
-import xml.etree.ElementTree as ET  # https://docs.python.org/2/library/xml.etree.elementtree.html
+# import xml.etree.ElementTree as ET  # https://docs.python.org/2/library/xml.etree.elementtree.html
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QFrame,QApplication,QWidget,QTabWidget,QFormLayout,QLineEdit, QHBoxLayout,QVBoxLayout,QRadioButton,QLabel,QCheckBox,QComboBox,QScrollArea
 

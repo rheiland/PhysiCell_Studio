@@ -45,6 +45,9 @@ class Vis(QWidget):
         
         self.use_defaults = True
         self.title_str = ""
+
+        self.config_file = "mymodel.xml"
+        self.reset_axes_flag = True
         self.xmin = -1000
         self.xmax = 1000
         self.x_range = self.xmax - self.xmin
@@ -70,7 +73,7 @@ class Vis(QWidget):
         self.figsize_height_svg = basic_length
 
         # self.output_dir = "/Users/heiland/dev/PhysiCell_V.1.8.0_release/output"
-        self.output_dir = "tmpdir"
+        self.output_dir = "output"
 
         #-------------------------------------------
         label_width = 110
@@ -99,7 +102,7 @@ class Vis(QWidget):
         # self.output_dir = "/Users/heiland/dev/PhysiCell_V.1.8.0_release/output"
         self.output_dir_w = QLineEdit()
         # w.setText("/Users/heiland/dev/PhysiCell_V.1.8.0_release/output")
-        # w.setText(self.output_dir)
+        self.output_dir_w.setText(self.output_dir)
         # w.textChanged[str].connect(self.output_dir_changed)
         # w.textChanged.connect(self.output_dir_changed)
         controls_hbox.addWidget(self.output_dir_w)
@@ -136,12 +139,18 @@ class Vis(QWidget):
 
     def open_directory_cb(self):
         dialog = QFileDialog()
-        self.output_dir = dialog.getExistingDirectory(self, 'Select an output directory')
-        print("open_directory_cb:  output_dir=",self.output_dir)
-        if self.output_dir is "":
+        # self.output_dir = dialog.getExistingDirectory(self, 'Select an output directory')
+        tmp_dir = dialog.getExistingDirectory(self, 'Select an output directory')
+        print("open_directory_cb:  tmp_dir=",tmp_dir)
+        if tmp_dir is "":
             return
 
+        self.output_dir = tmp_dir
         self.output_dir_w.setText(self.output_dir)
+        self.reset_axes()
+        
+    def reset_axes(self):
+        print("--------- vis_tab: reset_axes ----------")
         # Verify initial.xml and at least one .svg file exist. Obtain bounds from initial.xml
         # tree = ET.parse(self.output_dir + "/" + "initial.xml")
         xml_file = Path(self.output_dir, "initial.xml")
@@ -170,7 +179,7 @@ class Vis(QWidget):
 
         # and plot 1st frame (.svg)
         self.current_svg_frame = 0
-        self.forward_plot_cb("")  
+        # self.forward_plot_cb("")  
 
 
     # def output_dir_changed(self, text):
@@ -178,6 +187,10 @@ class Vis(QWidget):
     #     print(self.output_dir)
 
     def back_plot_cb(self, text):
+        if self.reset_axes_flag:
+            self.reset_axes()
+            self.reset_axes_flag = False
+
         self.current_svg_frame -= 1
         if self.current_svg_frame < 0:
             self.current_svg_frame = 0
@@ -187,6 +200,10 @@ class Vis(QWidget):
         self.canvas.draw()
 
     def forward_plot_cb(self, text):
+        if self.reset_axes_flag:
+            self.reset_axes()
+            self.reset_axes_flag = False
+
         self.current_svg_frame += 1
         print('svg # ',self.current_svg_frame)
         self.plot_svg(self.current_svg_frame)
@@ -217,11 +234,16 @@ class Vis(QWidget):
             self.canvas.draw()
 
     def animate(self, text):
+        if self.reset_axes_flag:
+            self.reset_axes()
+            self.reset_axes_flag = False
+
         self.current_svg_frame = 0
         # self.timer = QtCore.QTimer()
         # self.timer.timeout.connect(self.play_plot_cb)
         # self.timer.start(2000)  # every 2 sec
-        self.timer.start(100)
+        # self.timer.start(100)
+        self.timer.start(1)
 
     # def play_plot_cb0(self, text):
     #     for idx in range(10):
@@ -391,8 +413,8 @@ class Vis(QWidget):
         for child in root:
             #    print(child.tag, child.attrib)
             #    print("keys=",child.attrib.keys())
-            if self.use_defaults and ('width' in child.attrib.keys()):
-                self.axes_max = float(child.attrib['width'])
+            # if self.use_defaults and ('width' in child.attrib.keys()):
+            #     self.axes_max = float(child.attrib['width'])
                 # print("debug> found width --> axes_max =", axes_max)
             if child.text and "Current time" in child.text:
                 svals = child.text.split()

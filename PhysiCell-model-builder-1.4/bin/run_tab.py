@@ -7,6 +7,8 @@ Dr. Paul Macklin (macklinp@iu.edu)
 """
 
 import sys
+import os
+from pathlib import Path
 from PyQt5 import QtCore, QtGui
 # from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QFrame,QApplication,QWidget,QTabWidget,QFormLayout,QLineEdit, QHBoxLayout,QVBoxLayout,QRadioButton,QLabel,QCheckBox,QComboBox,QScrollArea, QPushButton,QPlainTextEdit
@@ -24,12 +26,19 @@ class RunModel(QWidget):
         super().__init__()
 
         #-------------------------------------------
+        self.vis_tab = None
+
         self.sim_output = QWidget()
         self.main_layout = QVBoxLayout()
 
         self.scroll = QScrollArea()
 
         self.p = None
+        # self.xmin = 0.0
+        # self.xmax = 1.0
+        # self.ymin = 0.0
+        # self.ymax = 1.0
+
         self.control_w = QWidget()
 
         self.vbox = QVBoxLayout()
@@ -38,12 +47,13 @@ class RunModel(QWidget):
         hbox = QHBoxLayout()
 
         self.run_button = QPushButton("Run Simulation")
-        self.run_button.setStyleSheet("background-color: green")
+        self.run_button.setStyleSheet("background-color: lightgreen")
         hbox.addWidget(self.run_button)
         self.run_button.clicked.connect(self.run_model_cb)
 
         self.cancel_button = QPushButton("Cancel")
-        self.cancel_button.setStyleSheet("background-color: red")
+        # self.cancel_button.setStyleSheet("background-color: red")
+        self.cancel_button.setStyleSheet("background-color: rgb(250,100,100)")
         hbox.addWidget(self.cancel_button)
         self.cancel_button.clicked.connect(self.cancel_model_cb)
 
@@ -53,7 +63,8 @@ class RunModel(QWidget):
 
         hbox.addWidget(QLabel("Exec:"))
         self.exec_name = QLineEdit()
-        self.exec_name.setText('mymodel')
+        # self.exec_name.setText('mymodel')
+        self.exec_name.setText('biorobots')
         hbox.addWidget(self.exec_name)
 
         hbox.addWidget(QLabel("Config:"))
@@ -89,6 +100,25 @@ class RunModel(QWidget):
 
     def run_model_cb(self):
         print("===========  run_model_cb():  ============")
+        if self.vis_tab:
+            # self.vis_tab.reset_axes()
+            self.vis_tab.reset_axes_flag = True
+
+        # for f in Path('./output').glob('*.*'):
+        #     try:
+        #         f.unlink()
+        #     except OSError as e:
+        #         print("Error: %s : %s" % (f, e.strerror))
+        os.system('rm -rf output/*')
+        # if os.path.isdir('tmpdir'):
+        #     # something on NFS causing issues...
+        #     tname = tempfile.mkdtemp(suffix='.bak', prefix='output_', dir='.')
+        #     shutil.move('output', tname)
+        # os.makedirs('output')
+
+        # update axes ranges on Plots
+
+
         if self.p is None:  # No process running.
             self.message("Executing process")
             self.p = QProcess()  # Keep a reference to the QProcess (e.g. on self) while it's running.

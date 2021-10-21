@@ -106,6 +106,7 @@ class PhysiCellXMLCreator(QWidget):
         # self.config_file = "config_samples/" + name + ".xml"
         self.config_file = copy_file  # to Save
 
+
         # self.config_file = read_file  # nanoHUB... to Save
         self.tree = ET.parse(self.config_file)
         # tree = ET.parse(read_file)
@@ -151,7 +152,12 @@ class PhysiCellXMLCreator(QWidget):
         # self.sbml_tab.xml_root = self.xml_root
         # self.sbml_tab.fill_gui()
 
+
+        # self.save_as_cb()
+
         self.run_tab = RunModel()
+        # self.run_tab.xmin = 
+        # self.run_tab.xmax = 
 
         #------------------
         tabWidget = QTabWidget()
@@ -165,6 +171,7 @@ class PhysiCellXMLCreator(QWidget):
             self.vis_tab = Vis()
             # self.vis_tab.xml_root = self.xml_root
             tabWidget.addTab(self.vis_tab,"Plot")
+            self.run_tab.vis_tab = self.vis_tab
 
         vlayout.addWidget(tabWidget)
         # self.addTab(self.sbml_tab,"SBML")
@@ -469,10 +476,12 @@ class PhysiCellXMLCreator(QWidget):
         sample_file = Path("data", name + ".xml")
         copy_file = "copy_" + name + ".xml"
         shutil.copy(sample_file, copy_file)
+        shutil.copy(sample_file, "mymodel.xml")
         self.add_new_model(copy_file, True)
         # self.config_file = "config_samples/" + name + ".xml"
         self.config_file = copy_file
         self.show_sample_model()
+        self.run_tab.exec_name.setText('biorobots')
 
         # self.tree = ET.parse(self.config_file)
         # self.xml_root = self.tree.getroot()
@@ -489,6 +498,7 @@ class PhysiCellXMLCreator(QWidget):
         self.add_new_model(copy_file, True)
         self.config_file = copy_file
         self.show_sample_model()
+        self.run_tab.exec_name.setText('')
 
     def hetero_cb(self):
         name = "heterogeneity"
@@ -498,6 +508,7 @@ class PhysiCellXMLCreator(QWidget):
         self.add_new_model(copy_file, True)
         self.config_file = copy_file
         self.show_sample_model()
+        self.run_tab.exec_name.setText('')
 
     def pred_prey_cb(self):
         name = "pred_prey_flat"
@@ -507,6 +518,7 @@ class PhysiCellXMLCreator(QWidget):
         self.add_new_model(copy_file, True)
         self.config_file = copy_file
         self.show_sample_model()
+        self.run_tab.exec_name.setText('')
 
     def virus_mac_cb(self):
         name = "virus_macrophage_flat"
@@ -516,6 +528,8 @@ class PhysiCellXMLCreator(QWidget):
         self.add_new_model(copy_file, True)
         self.config_file = copy_file
         self.show_sample_model()
+        # self.run_tab.exec_name.setText('virus_macrophage')
+        self.run_tab.exec_name.setText('')
 
     def worm_cb(self):
         name = "worm"
@@ -525,6 +539,7 @@ class PhysiCellXMLCreator(QWidget):
         self.add_new_model(copy_file, True)
         self.config_file = copy_file
         self.show_sample_model()
+        self.run_tab.exec_name.setText('')
 
     def cancer_immune_cb(self):
         name = "cancer_immune3D_flat"
@@ -534,15 +549,18 @@ class PhysiCellXMLCreator(QWidget):
         self.add_new_model(copy_file, True)
         self.config_file = copy_file
         self.show_sample_model()
+        self.run_tab.exec_name.setText('')
 
     def template_cb(self):
         name = "template"
         sample_file = Path("data", name + ".xml")
         copy_file = "copy_" + name + ".xml"
         shutil.copy(sample_file, copy_file)
+        shutil.copy(sample_file, "mymodel.xml")
         self.add_new_model(copy_file, True)
         self.config_file = copy_file
         self.show_sample_model()
+        self.run_tab.exec_name.setText('template')
 
     # def template3D_cb(self):
     #     name = "template3D_flat"
@@ -558,6 +576,7 @@ class PhysiCellXMLCreator(QWidget):
         self.add_new_model(copy_file, True)
         self.config_file = copy_file
         self.show_sample_model()
+        self.run_tab.exec_name.setText('')
 
     def covid19_cb(self):
         name = "covid19_v5_flat"
@@ -567,6 +586,7 @@ class PhysiCellXMLCreator(QWidget):
         self.add_new_model(copy_file, True)
         self.config_file = copy_file
         self.show_sample_model()
+        self.run_tab.exec_name.setText('')
 
     def test_gui_cb(self):
         name = "test-gui"
@@ -576,6 +596,7 @@ class PhysiCellXMLCreator(QWidget):
         self.add_new_model(copy_file, True)
         self.config_file = copy_file
         self.show_sample_model()
+        self.run_tab.exec_name.setText('')
 
 		
 # def main():
