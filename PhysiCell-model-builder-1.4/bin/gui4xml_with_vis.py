@@ -17,6 +17,8 @@ from pathlib import Path
 import xml.etree.ElementTree as ET  # https://docs.python.org/2/library/xml.etree.elementtree.html
 from xml.dom import minidom
 
+from matplotlib.colors import TwoSlopeNorm
+
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import *
 
@@ -179,7 +181,8 @@ class PhysiCellXMLCreator(QWidget):
         # tabWidget.setCurrentIndex(1)  # rwh/debug: select Microenv
         # tabWidget.setCurrentIndex(2)  # rwh/debug: select Cell Types
         if show_vis_flag:
-            tabWidget.setCurrentIndex(5)    # Vis (default)
+            # tabWidget.setCurrentIndex(5)    # Vis (default)
+            tabWidget.setCurrentIndex(6)    # Vis (default)
         else:
             tabWidget.setCurrentIndex(0)  # Config (default)
 
@@ -207,6 +210,7 @@ class PhysiCellXMLCreator(QWidget):
         # file_menu.setStatusTip('enable/disable Dark mode')
         # new_model_act = QtGui.QAction('', self)
         # file_menu.addAction(new_model_act)
+        TwoSlopeNorm
         # new_model_act.triggered.connect(self.new_model_cb)
 
         #--------------
@@ -518,7 +522,7 @@ class PhysiCellXMLCreator(QWidget):
         self.add_new_model(copy_file, True)
         self.config_file = copy_file
         self.show_sample_model()
-        self.run_tab.exec_name.setText('')
+        self.run_tab.exec_name.setText('pred_prey')
 
     def virus_mac_cb(self):
         name = "virus_macrophage_flat"

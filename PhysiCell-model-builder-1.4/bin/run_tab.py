@@ -102,7 +102,7 @@ class RunModel(QWidget):
         print("===========  run_model_cb():  ============")
         if self.vis_tab:
             # self.vis_tab.reset_axes()
-            self.vis_tab.reset_axes_flag = True
+            self.vis_tab.reset_model_flag = True
 
         # for f in Path('./output').glob('*.*'):
         #     try:
