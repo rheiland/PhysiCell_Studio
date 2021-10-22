@@ -171,6 +171,10 @@ class Vis(QWidget):
     def substrates_cbox_changed_cb(self,idx):
         print("----- substrates_cbox_changed_cb: idx = ",idx)
         self.field_idx = 4 + idx # substrate (0th -> 4 in the .mat)
+        if self.plot_svg_flag:
+            self.plot_svg(self.current_svg_frame)
+        else:
+            self.plot_substrate(self.current_svg_frame)
 
     def open_directory_cb(self):
         dialog = QFileDialog()
@@ -273,7 +277,7 @@ class Vis(QWidget):
             self.reset_model_flag = False
 
         self.current_svg_frame += 1
-        print('forware_plot_cb: svg # ',self.current_svg_frame)
+        print('forward_plot_cb: svg # ',self.current_svg_frame)
         if self.plot_svg_flag:
             self.plot_svg(self.current_svg_frame)
         else:
@@ -777,7 +781,8 @@ class Vis(QWidget):
         scipy.io.loadmat(full_fname, info_dict)
         M = info_dict['multiscale_microenvironment']
         print('plot_substrate: self.field_idx=',self.field_idx)
-        f = M[self.field_idx,:]   # 
+        # f = M[self.field_idx,:]   # 
+        print("min,max of field: ",M[self.field_idx,:].min(),M[self.field_idx,:].max())
 
         print("plot_substrate(): M.shape = ",M.shape)  # e.g.,  (6, 421875)  (where 421875=75*75*75)
         # numx = int(M.shape[1] ** (1./3) + 1)
