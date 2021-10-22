@@ -10,4 +10,7 @@ We recommend installing the [Anaconda Python distribution](https://www.anaconda.
 Download the latest release, then run this python script from the root folder in your Terminal (or Command Prompt) shell:
 ```
 python bin/gui4xml.py
+
+or, for the experimental Studio (with a Run tab and Plot tab):
+python bin/gui4xml_with_vis.py --vis
 ```
