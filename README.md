@@ -6,6 +6,8 @@ python bin/gui4xml_with_vis.py --vis
 ```
 
 ![](images/biorobots_cells2.png)
+![](images/biorobots_cargo_signal.png)
+
 
 On macOS anyway:
 ```
