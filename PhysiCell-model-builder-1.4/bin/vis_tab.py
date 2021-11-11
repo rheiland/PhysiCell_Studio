@@ -45,11 +45,12 @@ class Vis(QWidget):
         # self.tab = QWidget()
         # self.tabs.resize(200,5)
         
+        self.num_contours = 15
         self.fontsize = 5
 
         self.plot_svg_flag = True
-        self.plot_svg_flag = False
-        self.field_idx = 4  # substrate (0th -> 4 in the .mat)
+        # self.plot_svg_flag = False
+        self.field_index = 4  # substrate (0th -> 4 in the .mat)
 
         self.use_defaults = True
         self.title_str = ""
@@ -147,8 +148,8 @@ class Vis(QWidget):
 
         self.rbtn1 = QRadioButton('Cells')
         self.rbtn2 = QRadioButton('Substrates')
-        # self.rbtn1.setChecked(True)  # rf.  self.plot_svg_flag = True
-        self.rbtn2.setChecked(True)  # rf.  self.plot_svg_flag = True
+        self.rbtn1.setChecked(True)  # rf.  self.plot_svg_flag = True
+        # self.rbtn2.setChecked(True)  # rf.  self.plot_svg_flag = True
         
         self.rbtn1.toggled.connect(self.cells_sub_toggle_cb)
         self.rbtn2.toggled.connect(self.cells_sub_toggle_cb)
@@ -185,11 +186,14 @@ class Vis(QWidget):
 
     def substrates_cbox_changed_cb(self,idx):
         print("----- substrates_cbox_changed_cb: idx = ",idx)
-        self.field_idx = 4 + idx # substrate (0th -> 4 in the .mat)
+        self.field_index = 4 + idx # substrate (0th -> 4 in the .mat)
         if self.plot_svg_flag:
             self.plot_svg(self.current_svg_frame)
         else:
             self.plot_substrate(self.current_svg_frame)
+
+        self.canvas.update()
+        self.canvas.draw()
 
 
     def open_directory_cb(self):
@@ -311,7 +315,7 @@ class Vis(QWidget):
         self.current_svg_frame -= 1
         if self.current_svg_frame < 0:
             self.current_svg_frame = 0
-        print('svg # ',self.current_svg_frame)
+        # print('svg # ',self.current_svg_frame)
         if self.plot_svg_flag:
             self.plot_svg(self.current_svg_frame)
         else:
@@ -325,7 +329,7 @@ class Vis(QWidget):
             self.reset_model_flag = False
 
         self.current_svg_frame += 1
-        print('svg # ',self.current_svg_frame)
+        # print('svg # ',self.current_svg_frame)
         if self.plot_svg_flag:
             self.plot_svg(self.current_svg_frame)
         else:
@@ -338,7 +342,7 @@ class Vis(QWidget):
     def play_plot_cb(self):
         for idx in range(1):
             self.current_svg_frame += 1
-            print('svg # ',self.current_svg_frame)
+            # print('svg # ',self.current_svg_frame)
 
             fname = "snapshot%08d.svg" % self.current_svg_frame
             full_fname = os.path.join(self.output_dir, fname)
@@ -350,6 +354,7 @@ class Vis(QWidget):
                 # print("Once output files are generated, click the slider.")   
                 print("ERROR:  filename not found.")
                 self.timer.stop()
+                self.current_svg_frame -= 1
                 return
 
             if self.plot_svg_flag:
@@ -369,6 +374,9 @@ class Vis(QWidget):
         else:
             self.plot_svg_flag = False 
             self.plot_substrate(self.current_svg_frame)
+
+        self.canvas.update()
+        self.canvas.draw()
 
     def animate(self, text):
         if self.reset_model_flag:
@@ -395,7 +403,7 @@ class Vis(QWidget):
 
     def prepare_plot_cb(self, text):
         self.current_svg_frame += 1
-        print('svg # ',self.current_svg_frame)
+        print('prepare_plot_cb(): svg # ',self.current_svg_frame)
         if self.plot_svg_flag:
             self.plot_svg(self.current_svg_frame)
         else:
@@ -405,6 +413,7 @@ class Vis(QWidget):
         self.canvas.draw()
 
     def create_figure(self):
+        print("create_figure(): ------- creating figure, canvas, ax0")
         self.figure = plt.figure()
         self.canvas = FigureCanvasQTAgg(self.figure)
         self.canvas.setStyleSheet("background-color:transparent;")
@@ -431,6 +440,7 @@ class Vis(QWidget):
         # else:
         #     self.plot_substrate(self.current_svg_frame)
 
+        print("create_figure(): ------- creating dummy contourf")
         xlist = np.linspace(-3.0, 3.0, 50)
         print("len(xlist)=",len(xlist))
         ylist = np.linspace(-3.0, 3.0, 50)
@@ -440,6 +450,7 @@ class Vis(QWidget):
         self.cmap = plt.cm.get_cmap("viridis")
         self.mysubstrate = self.ax0.contourf(X, Y, Z, cmap=self.cmap)
         self.cbar = self.figure.colorbar(self.mysubstrate, ax=self.ax0)
+        self.cbar.ax.tick_params(labelsize=self.fontsize)
 
         # substrate_plot = self.ax0.contourf(xgrid, ygrid, M[self.field_index, :].reshape(self.numy,self.numx), num_contours, cmap='viridis')  # self.colormap_dd.value)
 
@@ -457,7 +468,8 @@ class Vis(QWidget):
 
         # plt.subplots_adjust(left=0, bottom=0.05, right=1, top=1, wspace=0, hspace=0)
 
-        self.canvas.draw()
+        self.plot_svg(self.current_svg_frame)
+        # self.canvas.draw()
 
     #---------------------------------------------------------------------------
     def circles(self, x, y, s, c='b', vmin=None, vmax=None, **kwargs):
@@ -544,7 +556,7 @@ class Vis(QWidget):
         current_frame = frame
         fname = "snapshot%08d.svg" % frame
         full_fname = os.path.join(self.output_dir, fname)
-        print("full_fname = ",full_fname)
+        print("plot_svg(): full_fname = ",full_fname)
         # with debug_view:
             # print("plot_svg:", full_fname) 
         # print("-- plot_svg:", full_fname) 
@@ -555,6 +567,18 @@ class Vis(QWidget):
 
         self.ax0.cla()
         self.title_str = ""
+
+# https://stackoverflow.com/questions/5263034/remove-colorbar-from-figure-in-matplotlib
+# def foo(self):
+#    self.subplot.clear()
+#    hb = self.subplot.hexbin(...)
+#    if self.cb:
+#       self.figure.delaxes(self.figure.axes[1])
+#       self.figure.subplots_adjust(right=0.90)  #default right padding
+#    self.cb = self.figure.colorbar(hb)
+
+        # if self.cbar:
+            # self.cbar.remove()
 
         xlist = deque()
         ylist = deque()
@@ -740,6 +764,11 @@ class Vis(QWidget):
 
         xml_file_root = "output%08d.xml" % frame
         xml_file = os.path.join(self.output_dir, xml_file_root)
+        if not Path(xml_file).is_file():
+            print("ERROR: file not found",xml_file)
+            return
+
+        # xml_file = os.path.join(self.output_dir, xml_file_root)
         tree = ET.parse(xml_file)
         root = tree.getroot()
     #    print('time=' + root.find(".//current_time").text)
@@ -747,22 +776,24 @@ class Vis(QWidget):
         hrs = mins/60.
         days = hrs/24.
         # title_str = '%d days, %d hrs, %d mins' % (int(days),(hrs%24), mins - (hrs*60))
-        self.title_str = '%f mins' % (mins)
+        self.title_str = '%.0f mins' % (mins)
         print(self.title_str)
-
 
         fname = "output%08d_microenvironment0.mat" % frame
         full_fname = os.path.join(self.output_dir, fname)
+        print("plot_substrate(): full_fname=",full_fname)
         if not Path(full_fname).is_file():
-            print("file not found",full_fname)
+            print("ERROR: file not found",full_fname)
             return
 
         info_dict = {}
         scipy.io.loadmat(full_fname, info_dict)
         M = info_dict['multiscale_microenvironment']
-        field_idx = 0
-        print('plot_substrate: field_idx=',field_idx)
-        f = M[field_idx,:]   # 
+        print('plot_substrate: self.field_index=',self.field_index)
+
+        # debug
+        # fsub = M[self.field_index,:]   # 
+        # print("substrate min,max=",fsub.min(), fsub.max())
 
         print("M.shape = ",M.shape)  # e.g.,  (6, 421875)  (where 421875=75*75*75)
         # numx = int(M.shape[1] ** (1./3) + 1)
@@ -775,17 +806,31 @@ class Vis(QWidget):
         xgrid = M[0, :].reshape(self.numy, self.numx)
         ygrid = M[1, :].reshape(self.numy, self.numx)
 
-        num_contours = 10
+        # self.num_contours = 15
 
-        vmin = 0
-        vmax = 10
-        levels = MaxNLocator(nbins=30).tick_values(vmin, vmax)
+        # if (self.colormap_fixed_toggle.value):
+        #     try:
+        #         # vmin = 0
+        #         # vmax = 10
+        #         # levels = MaxNLocator(nbins=30).tick_values(vmin, vmax)
+        #         num_contours = 15
+        #         levels = MaxNLocator(nbins=num_contours).tick_values(self.colormap_min.value, self.colormap_max.value)
+        #         substrate_plot = self.ax0.contourf(xgrid, ygrid, M[self.field_index, :].reshape(self.numy, self.numx), levels=levels, extend='both', cmap=self.colormap_dd.value, fontsize=self.fontsize)
+        #     except:
+        #         contour_ok = False
+        #         # print('got error on contourf 1.')
+        # else:    
+        #     try:
+        #         substrate_plot = self.ax0.contourf(xgrid, ygrid, M[self.field_index, :].reshape(self.numy,self.numx), num_contours, cmap=self.colormap_dd.value)
+        #     except:
+        #         contour_ok = False
+        #             # print('got error on contourf 2.')
 
         contour_ok = True
         # if (self.colormap_fixed_toggle.value):
-        self.field_index = 4
+        # self.field_index = 4
 
-        substrate_plot = self.ax0.contourf(xgrid, ygrid, M[self.field_index, :].reshape(self.numy,self.numx), num_contours, cmap='viridis')  # self.colormap_dd.value)
+        substrate_plot = self.ax0.contourf(xgrid, ygrid, M[self.field_index, :].reshape(self.numy,self.numx), self.num_contours, cmap='viridis')  # self.colormap_dd.value)
 
         print("# axes = ",len(self.figure.axes))
         if len(self.figure.axes) > 1: 
@@ -795,6 +840,7 @@ class Vis(QWidget):
             cax = self.figure.add_axes([pts[0][0],pts[0][1],pts[1][0]-pts[0][0],pts[1][1]-pts[0][1]  ])
             self.cbar = self.figure.colorbar(substrate_plot, cax=cax)
             self.cbar.ax.set_ylabel(label)
+            self.cbar.ax.tick_params(labelsize=self.fontsize)
 
             # unfortunately the aspect is different between the initial call to colorbar 
             #   without cax argument. Try to reset it (but still it's somehow different)
@@ -815,6 +861,8 @@ class Vis(QWidget):
         #     except:
         #         contour_ok = False
         #         print('---------got error on contourf 2.')
+
+        self.ax0.set_title(self.title_str, fontsize=self.fontsize)
 
         # if (contour_ok):
         # if (True):
