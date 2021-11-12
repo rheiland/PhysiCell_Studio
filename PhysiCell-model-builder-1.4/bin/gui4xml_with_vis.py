@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import *
 
 from config_tab import Config
 from cell_def_tab import CellDef 
-from cell_custom_data_tab import CellCustomData 
+# from cell_custom_data_tab import CellCustomData 
 from microenv_tab import SubstrateDef 
 from user_params_tab import UserParams 
 from run_tab import RunModel 
@@ -140,11 +140,11 @@ class PhysiCellXMLCreator(QWidget):
         self.celldef_tab.fill_substrates_comboboxes()
         self.microenv_tab.celldef_tab = self.celldef_tab
 
-        self.cell_customdata_tab = CellCustomData()
-        self.cell_customdata_tab.xml_root = self.xml_root
-        self.cell_customdata_tab.celldef_tab = self.celldef_tab
-        self.cell_customdata_tab.fill_gui(self.celldef_tab)
-        self.celldef_tab.fill_custom_data_tab()
+        # self.cell_customdata_tab = CellCustomData()
+        # self.cell_customdata_tab.xml_root = self.xml_root
+        # self.cell_customdata_tab.celldef_tab = self.celldef_tab
+        # self.cell_customdata_tab.fill_gui(self.celldef_tab)
+        # self.celldef_tab.fill_custom_data_tab()
         
         self.user_params_tab = UserParams()
         self.user_params_tab.xml_root = self.xml_root
@@ -166,7 +166,7 @@ class PhysiCellXMLCreator(QWidget):
         tabWidget.addTab(self.config_tab,"Config Basics")
         tabWidget.addTab(self.microenv_tab,"Microenvironment")
         tabWidget.addTab(self.celldef_tab,"Cell Types")
-        tabWidget.addTab(self.cell_customdata_tab,"Cell Custom Data")
+        # tabWidget.addTab(self.cell_customdata_tab,"Cell Custom Data")
         tabWidget.addTab(self.user_params_tab,"User Params")
         tabWidget.addTab(self.run_tab,"Run")
         if show_vis_flag:
@@ -181,8 +181,9 @@ class PhysiCellXMLCreator(QWidget):
         # tabWidget.setCurrentIndex(1)  # rwh/debug: select Microenv
         # tabWidget.setCurrentIndex(2)  # rwh/debug: select Cell Types
         if show_vis_flag:
-            # tabWidget.setCurrentIndex(5)    # Vis (default)
-            tabWidget.setCurrentIndex(6)    # Vis (default)
+            tabWidget.setCurrentIndex(0)    # Cconfig Basics
+            # tabWidget.setCurrentIndex(5)    # Plot
+            # tabWidget.setCurrentIndex(2)    # Cell Types
         else:
             tabWidget.setCurrentIndex(0)  # Config (default)
 
@@ -486,6 +487,7 @@ class PhysiCellXMLCreator(QWidget):
         self.config_file = copy_file
         self.show_sample_model()
         self.run_tab.exec_name.setText('biorobots')
+        self.save_as_cb()
 
         # self.tree = ET.parse(self.config_file)
         # self.xml_root = self.tree.getroot()
@@ -523,6 +525,7 @@ class PhysiCellXMLCreator(QWidget):
         self.config_file = copy_file
         self.show_sample_model()
         self.run_tab.exec_name.setText('pred_prey')
+        self.save_as_cb()
 
     def virus_mac_cb(self):
         name = "virus_macrophage_flat"
@@ -565,6 +568,7 @@ class PhysiCellXMLCreator(QWidget):
         self.config_file = copy_file
         self.show_sample_model()
         self.run_tab.exec_name.setText('template')
+        self.save_as_cb()
 
     # def template3D_cb(self):
     #     name = "template3D_flat"

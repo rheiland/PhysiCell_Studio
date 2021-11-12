@@ -22,6 +22,7 @@ class QHLine(QFrame):
 # Overloading the QLineEdit widget to let us map it to its variable name. Ugh.
 class MyQLineEdit(QLineEdit):
     vname = None
+    idx = None  # index
 
 class CellDef(QWidget):
     def __init__(self):
@@ -44,7 +45,10 @@ class CellDef(QWidget):
         self.xml_root = None
         self.custom_data_count = 0
         self.max_custom_data_rows = 99
+        self.max_entries = self.max_custom_data_rows
+        self.master_custom_varname = []
         # self.custom_data_units_width = 90
+
         self.cycle_duration_flag = False
 
         self.substrate_list = []
@@ -2709,10 +2713,33 @@ class CellDef(QWidget):
 
         #-------------------------
         # Fixed names for columns:
+        # hbox = QHBoxLayout()
+
+        # col1 = QLabel("Name")
+        # col1.setAlignment(QtCore.Qt.AlignCenter)
+        # hbox.addWidget(col1)
+
+        # # col2 = QLabel("Type")
+        # # col2.setAlignment(QtCore.Qt.AlignCenter)
+        # # hbox.addWidget(col2)
+
+        # col3 = QLabel("Default Value (floating point)")
+        # col3.setAlignment(QtCore.Qt.AlignCenter)
+        # hbox.addWidget(col3)
+
+        # col4 = QLabel("Units")
+        # col4.setFixedWidth(self.units_width)
+        # col4.setAlignment(QtCore.Qt.AlignCenter)
+        # hbox.addWidget(col4)
+        # # label.setFixedWidth(180)
+        # self.main_layout.addLayout(hbox)
+
+        #-------------------------
+        # Fixed names for columns:
         hbox = QHBoxLayout()
-        w = QLabel("Name(read only)")
+        w = QLabel("Name")
         w.setAlignment(QtCore.Qt.AlignCenter)
-        w.setStyleSheet("color: Salmon")  # PaleVioletRed")
+        # w.setStyleSheet("color: Salmon")  # PaleVioletRed")
         # hbox.addWidget(w)
         idr = 0
         glayout.addWidget(w, idr,0, 1,1) # w, row, column, rowspan, colspan
@@ -2720,15 +2747,15 @@ class CellDef(QWidget):
         # col2 = QtWidgets.QLabel("Type")
         # col2.setAlignment(QtCore.Qt.AlignCenter)
         # hbox.addWidget(col2)
-        w = QLabel("Value (floating point)")
+        w = QLabel("Value (numeric)")
         w.setAlignment(QtCore.Qt.AlignCenter)
         # hbox.addWidget(w)
         glayout.addWidget(w, idr,1, 1,1) # w, row, column, rowspan, colspan
         
-        # w = QLabel("Units(r/o)")
-        # w.setAlignment(QtCore.Qt.AlignCenter)
+        w = QLabel("Units")
+        w.setAlignment(QtCore.Qt.AlignCenter)
         # w.setStyleSheet("color: Salmon")  # PaleVioletRed")
-        # glayout.addWidget(w, idr,2, 1,1) # w, row, column, rowspan, colspan
+        glayout.addWidget(w, idr,2, 1,1) # w, row, column, rowspan, colspan
 
         # glayout.addWidget(blank_line, idr,0, 1,1) # w, row, column, rowspan, colspan
         # idx = 0
@@ -2745,8 +2772,11 @@ class CellDef(QWidget):
         # self.custom_data_select = []
         self.custom_data_name = []
         self.custom_data_value = []
+        self.custom_data_units = []
+        self.custom_data_desc = []
         # self.custom_data_units = []
 
+        idr = 0
         for idx in range(self.max_custom_data_rows):   # rwh/TODO - this should depend on how many in the .xml
             # self.main_layout.addLayout(NewUserParam(self))
             # hbox = QHBoxLayout()
@@ -2754,19 +2784,45 @@ class CellDef(QWidget):
             # self.custom_data_select.append(w)
             # hbox.addWidget(w)
 
-            w_varname = QLineEdit()
-            w_varname.setStyleSheet("background-color: Salmon")  # PaleVioletRed")
-            w_varname.setReadOnly(True)
+            #---------------------- 
+            # custom variable name
+            w_varname = MyQLineEdit()
+            # rx_valid_varname = QtCore.QRegExp("^[a-zA-Z0-9_]+$")
+            rx_valid_varname = QtCore.QRegExp("^[a-zA-Z][a-zA-Z0-9_]+$")
+            name_validator = QtGui.QRegExpValidator(rx_valid_varname )
+            w_varname.setValidator(name_validator)
+
             self.custom_data_name.append(w_varname)
+            w_varname.vname = w_varname  # ??
+            w_varname.idx = idx
+
+            # crucial/warning: this "connect" callback can be tricky
+            w_varname.textChanged[str].connect(self.custom_data_name_changed)  # being explicit about passing a string 
+
+            # w_varname.setReadOnly(True)
+            # self.custom_data_name.append(w_varname)
             idr += 1
             glayout.addWidget(w_varname, idr,0, 1,1) # w, row, column, rowspan, colspan
 
-            w = MyQLineEdit()  # using an overloaded class to allow the connection to the custom data variable name!!!
-            w.setValidator(QtGui.QDoubleValidator())
-            w.vname = w_varname
-            w.textChanged[str].connect(self.custom_data_value_changed)  # being explicit about passing a string 
-            self.custom_data_value.append(w)
-            glayout.addWidget(w, idr,1, 1,1) # w, row, column, rowspan, colspan
+            #---------------------- 
+            # custom variable value
+            w_varval = MyQLineEdit()  # using an overloaded class to allow the connection to the custom data variable name!!!
+            w_varval.setValidator(QtGui.QDoubleValidator())
+            w_varval.vname = w_varname
+            w_varval.textChanged[str].connect(self.custom_data_value_changed)  # being explicit about passing a string 
+            self.custom_data_value.append(w_varval)
+            # idr += 1
+            glayout.addWidget(w_varval, idr,1, 1,1) # w, row, column, rowspan, colspan
+
+            #---------------------- 
+            w_units = MyQLineEdit()
+            # w.setReadOnly(True)
+            w_units.setFixedWidth(self.units_width)
+            self.custom_data_units.append(w_units)
+            # hbox.addWidget(w)
+            # idr += 1
+            glayout.addWidget(w_units, idr,2, 1,1) # w, row, column, rowspan, colspan
+
 
             # w = QLineEdit()
             # w.setStyleSheet("background-color: Salmon")  # PaleVioletRed")
@@ -2780,6 +2836,26 @@ class CellDef(QWidget):
             # units = QtWidgets.QLabel("micron^2/min")
             # units.setFixedWidth(self.units_width)
             # hbox.addWidget(units)
+
+            w_desc = QLineEdit()
+            idr += 1
+            desc_label = QLabel("Description (optional)")
+            desc_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
+            # glayout.addWidget(QLabel("Description (optional) --------->"), idr,0, 1,1) # w, row, column, rowspan, colspan
+            glayout.addWidget(desc_label, idr,0, 1,1) # w, row, column, rowspan, colspan
+            glayout.addWidget(w_desc, idr,1, 1,2) # w, row, column, rowspan, colspan
+
+            if idx % 2 == 0:
+                w_varname.setStyleSheet("background-color: Tan")
+                w_varval.setStyleSheet("background-color: Tan")
+                w_units.setStyleSheet("background-color: Tan")
+                w_desc.setStyleSheet("background-color: Tan")
+            else:
+                w_varname.setStyleSheet("background-color: LightGreen")
+                w_varval.setStyleSheet("background-color: LightGreen")
+                w_units.setStyleSheet("background-color: LightGreen")  
+                w_desc.setStyleSheet("background-color: LightGreen")  
 
 #            self.vbox.addLayout(hbox)
 
@@ -2846,6 +2922,81 @@ class CellDef(QWidget):
         # vlayout.setVerticalSpacing(10)  # rwh - argh
         custom_data_tab.setLayout(glayout)
         return custom_data_tab
+
+
+    def custom_data_name_changed(self, text):
+        print("--------- cell_def_tab.py: custom_data tab: custom_data_name_changed() --------")
+        print("   self.current_cell_def = ", self.current_cell_def)
+
+        # # print("self.sender() = ", self.sender())
+        vname = self.sender().vname.text()
+        idx = self.sender().idx
+        print(" self.sender().idx= ",self.sender().idx)
+        print(" master_custom_varname= ",self.master_custom_varname)
+        if idx < len(self.master_custom_varname):
+            old_varname = self.master_custom_varname[idx]
+            print(" old varname = ",old_varname)
+        else:  # adding a new varname
+            self.master_custom_varname.append(vname)
+            for cdname in self.param_d.keys():
+                print("----- cdname = ",cdname)
+                self.param_d[cdname]['custom_data'][vname] = '0.0'
+                print(self.param_d[cdname]['custom_data'])
+            return
+
+        # prev_vname = self.celldef_tab.custom_data_name[idx].text()
+        # print("custom_data_name_changed(): prev_vname = ",prev_vname)
+        # # print("(master) prev_vname = ", self.sender().prev_vname)
+        print("(master) vname = ", vname)
+        print("(master) idx = ", idx)
+        print("(master) custom_data_name_changed(): text = ", text)
+        # print()
+
+        if old_varname != vname:
+            for cdname in self.param_d.keys():
+                print("----- cdname = ",cdname)
+                self.param_d[cdname]['custom_data'][vname] = self.param_d[cdname]['custom_data'].pop(old_varname)
+                print(self.param_d[cdname]['custom_data'])
+                self.master_custom_varname = [vname if x==old_varname else x for x in self.master_custom_varname]
+
+            # self.param_d[cell_def_name]['custom_data'][var.tag] = val   # TODO: rename this dict key (var.tag)
+            # a_dict[new_key] = a_dict.pop(old_key)
+
+        # New, manual way (Sep 2021): once a user enters a new name for a custom var, enable its other fields.
+        # self.select[idx].setEnabled(True)
+        # print("len(vname) = ",len(vname))
+        if len(vname) > 0:
+            self.custom_data_value[idx].setReadOnly(False)
+            self.custom_data_units[idx].setReadOnly(False)
+            # self.custom_data_description[idx].setReadOnly(False)
+
+            self.custom_data_name[idx+1].setReadOnly(False)   # Crucial: enable the *next* var name slot as writable!
+            # print("\n------- Enabling row (name) # ",idx+1, "as editable.")
+            if idx > self.max_entries:
+                self.max_entries = idx
+                # print("\n------- resetting max_entries = ",self.max_entries)
+        else:
+            # print("len(vname) = 0, setting fields readonly")
+            self.custom_data_value[idx].setReadOnly(True)
+            self.custom_data_units[idx].setReadOnly(True)
+            # self.custom_data_description[idx].setReadOnly(True)
+
+            # self.name[idx+1].setReadOnly(True)
+
+
+    # --- custom data (rwh: OMG, this took a lot of time to solve!)
+    def custom_data_value_changed(self, text):
+        print("--------- (master) custom_data tab: custom_data_value_changed() --------")
+        # print("self.sender() = ", self.sender())
+        vname = self.sender().vname.text()
+        idx = self.sender().idx
+        print("(master) vname = ", vname)
+        print("(master) idx = ", idx)
+        print("(master) custom_data_value_changed(): text = ", text)
+
+        self.param_d[self.current_cell_def]['custom_data'][vname] = text
+        # self.param_d[self.current_cell_def]['cycle_choice_idx'] = idx
+        # print()
 
     #--------------------------------------------------------
     # TODO: fix this; not working yet (and not called)
@@ -3674,8 +3825,8 @@ class CellDef(QWidget):
     #-----------------------------------------------------------------------------------------
     def update_custom_data_params(self):
         cdname = self.current_cell_def
-        # print("\n--------- cell_def_tab.py: update_custom_data_params():  cdname= ",cdname)
-        # print("\n--------- cell_def_tab.py: update_custom_data_params():  self.param_d[cdname]['custom_data'] = ",self.param_d[cdname]['custom_data'])
+        print("\n--------- cell_def_tab.py: update_custom_data_params():  cdname= ",cdname)
+        print("\n--------- cell_def_tab.py: update_custom_data_params():  self.param_d[cdname]['custom_data'] = ",self.param_d[cdname]['custom_data'])
         num_vals = len(self.param_d[cdname]['custom_data'].keys())
         # print("num_vals =", num_vals)
         idx = 0
@@ -3701,7 +3852,7 @@ class CellDef(QWidget):
     def tree_item_clicked_cb(self, it,col):
         # print('\n\n------------ tree_item_clicked_cb -----------:', it, col, it.text(col) )
         self.current_cell_def = it.text(col)
-        # print('--- self.current_cell_def= ',self.current_cell_def )
+        print('--- tree_item_clicked_cb(): self.current_cell_def= ',self.current_cell_def )
 
         # for k in self.param_d.keys():
         #     print(" ===>>> ",k, " : ", self.param_d[k])
@@ -4597,6 +4748,8 @@ class CellDef(QWidget):
                         # print("val= ",val)
                         # self.param_d[cell_def_name]["secretion"][substrate_name]["secretion_rate"] = val
                         self.param_d[cell_def_name]['custom_data'][var.tag] = val
+                        if var.tag not in self.master_custom_varname:
+                            self.master_custom_varname.append(var.tag)
                         self.custom_data_count += 1
                 #     self.custom_data_name[jdx].setText(var.tag)
                 #     print("tag=",var.tag)
