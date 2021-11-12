@@ -322,7 +322,7 @@ class PhysiCellXMLCreator(QWidget):
         self.config_tab.xml_root = self.xml_root
         self.microenv_tab.xml_root = self.xml_root
         self.celldef_tab.xml_root = self.xml_root
-        self.cell_customdata_tab.xml_root = self.xml_root
+        # self.cell_customdata_tab.xml_root = self.xml_root
         self.user_params_tab.xml_root = self.xml_root
 
         self.config_tab.fill_gui()
@@ -333,8 +333,8 @@ class PhysiCellXMLCreator(QWidget):
         # self.microenv_tab.fill_gui()
 
         # Do this before the celldef_tab
-        self.cell_customdata_tab.clear_gui(self.celldef_tab)
-        self.cell_customdata_tab.fill_gui(self.celldef_tab)
+        # self.cell_customdata_tab.clear_gui(self.celldef_tab)
+        # self.cell_customdata_tab.fill_gui(self.celldef_tab)
 
         # self.celldef_tab.clear_gui()
         self.celldef_tab.clear_custom_data_params()

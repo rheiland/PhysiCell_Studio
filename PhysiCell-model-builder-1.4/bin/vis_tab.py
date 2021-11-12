@@ -773,10 +773,9 @@ class Vis(QWidget):
         root = tree.getroot()
     #    print('time=' + root.find(".//current_time").text)
         mins = float(root.find(".//current_time").text)
-        hrs = mins/60.
-        days = hrs/24.
-        # title_str = '%d days, %d hrs, %d mins' % (int(days),(hrs%24), mins - (hrs*60))
-        self.title_str = '%.0f mins' % (mins)
+        hrs = int(mins/60)
+        days = int(hrs/24)
+        self.title_str = '%d days, %d hrs, %d mins' % (days,hrs-days*24, mins-hrs*60)
         print(self.title_str)
 
         fname = "output%08d_microenvironment0.mat" % frame

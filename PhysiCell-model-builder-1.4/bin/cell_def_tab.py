@@ -155,7 +155,12 @@ class CellDef(QWidget):
         self.mechanics_tab = QWidget()
         self.motility_tab = QWidget()
         self.secretion_tab = QWidget()
+
         self.custom_data_tab = QWidget()
+        self.custom_data_name = []
+        self.custom_data_value = []
+        self.custom_data_units = []
+        self.custom_data_desc = []
 
         self.scroll_params = QScrollArea()
 
@@ -2770,11 +2775,10 @@ class CellDef(QWidget):
         # Create lists for the various input boxes
         # TODO! Need lists for each cell type too.
         # self.custom_data_select = []
-        self.custom_data_name = []
-        self.custom_data_value = []
-        self.custom_data_units = []
-        self.custom_data_desc = []
-        # self.custom_data_units = []
+        self.custom_data_name.clear()
+        self.custom_data_value.clear()
+        self.custom_data_units.clear()
+        self.custom_data_desc.clear()
 
         idr = 0
         for idx in range(self.max_custom_data_rows):   # rwh/TODO - this should depend on how many in the .xml
@@ -2925,7 +2929,7 @@ class CellDef(QWidget):
 
 
     def custom_data_name_changed(self, text):
-        print("--------- cell_def_tab.py: custom_data tab: custom_data_name_changed() --------")
+        print("\n--------- cell_def_tab.py: custom_data tab: custom_data_name_changed() --------")
         print("   self.current_cell_def = ", self.current_cell_def)
 
         # # print("self.sender() = ", self.sender())
@@ -2975,11 +2979,11 @@ class CellDef(QWidget):
             if idx > self.max_entries:
                 self.max_entries = idx
                 # print("\n------- resetting max_entries = ",self.max_entries)
-        else:
-            # print("len(vname) = 0, setting fields readonly")
-            self.custom_data_value[idx].setReadOnly(True)
-            self.custom_data_units[idx].setReadOnly(True)
-            # self.custom_data_description[idx].setReadOnly(True)
+        # else:
+        #     # print("len(vname) = 0, setting fields readonly")
+        #     self.custom_data_value[idx].setReadOnly(True)
+        #     self.custom_data_units[idx].setReadOnly(True)
+        #     # self.custom_data_description[idx].setReadOnly(True)
 
             # self.name[idx+1].setReadOnly(True)
 
@@ -3028,7 +3032,7 @@ class CellDef(QWidget):
         for idx in range(self.custom_data_count):
             self.custom_data_name[idx].setReadOnly(False)  # turn off read-only so we can change it. ugh.
             self.custom_data_name[idx].setText("")  # beware this triggering a callback
-            self.custom_data_name[idx].setReadOnly(True)
+            # self.custom_data_name[idx].setReadOnly(True)
 
             self.custom_data_value[idx].setText("") # triggering a callback)  # beware thiis 
 
@@ -3874,6 +3878,8 @@ class CellDef(QWidget):
     # Parse the .xml, populate the dict of params (self.param_d) and self.tree
     def populate_tree(self):
         print("=======================  cell_def populate_tree  ======================= ")
+        self.master_custom_varname.clear()
+
         uep = self.xml_root.find(".//cell_definitions")
         if uep:
             self.tree.clear()
