@@ -1,7 +1,7 @@
 # PhysiCell_Studio
 
 ```
-cd PhysiCell-model-builder-1.4
+cd PhysiCell-model-builder
 python bin/gui4xml_with_vis.py --vis
 ```
 
