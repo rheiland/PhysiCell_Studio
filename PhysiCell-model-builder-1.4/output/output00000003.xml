@@ -10,10 +10,10 @@
 			<user />
 		</software>
 		<citation />
-		<current_time units="min">0.000000</current_time>
-		<current_runtime units="sec">0.097547</current_runtime>
-		<created>2021-11-09T22:27:25Z</created>
-		<last_modified>2021-11-09T22:27:25Z</last_modified>
+		<current_time units="min">30.000000</current_time>
+		<current_runtime units="sec">5.630758</current_runtime>
+		<created>2021-11-09T22:27:31Z</created>
+		<last_modified>2021-11-09T22:27:31Z</last_modified>
 	</metadata>
 	<microenvironment>
 		<domain name="synthetic tissue">
@@ -43,7 +43,7 @@
 				</variable>
 			</variables>
 			<data type="matlab">
-				<filename>initial_microenvironment0.mat</filename>
+				<filename>output00000003_microenvironment0.mat</filename>
 			</data>
 		</domain>
 	</microenvironment>
@@ -52,7 +52,7 @@
 			<cell_population type="individual">
 				<custom>
 					<simplified_data type="matlab" source="BioFVM">
-						<filename>initial_cells.mat</filename>
+						<filename>output00000003_cells.mat</filename>
 					</simplified_data>
 					<simplified_data type="matlab" source="PhysiCell">
 						<labels>
@@ -77,7 +77,7 @@
 							<label index="26" size="1">motility_reserved</label>
 							<label index="27" size="1">receptor</label>
 						</labels>
-						<filename>initial_cells_physicell.mat</filename>
+						<filename>output00000003_cells_physicell.mat</filename>
 					</simplified_data>
 				</custom>
 			</cell_population>
