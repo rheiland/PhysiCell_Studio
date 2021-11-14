@@ -364,4 +364,5 @@ class UserParams(QtWidgets.QWidget):
                 elm.tail = '\n        '
                 uep.insert(knt,elm)
                 knt += 1
+        elm.tail = '\n    '
         print("found ",knt)

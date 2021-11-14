@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import *
 
 from config_tab import Config
 from cell_def_tab import CellDef 
-from cell_custom_data_tab import CellCustomData 
+# from cell_custom_data_tab import CellCustomData 
 from microenv_tab import SubstrateDef 
 from user_params_tab import UserParams 
 # from sbml_tab import SBMLParams 
@@ -141,10 +141,10 @@ class PhysiCellXMLCreator(QWidget):
         self.celldef_tab.fill_substrates_comboboxes()
         self.microenv_tab.celldef_tab = self.celldef_tab
 
-        self.cell_customdata_tab = CellCustomData()
-        self.cell_customdata_tab.xml_root = self.xml_root
-        self.cell_customdata_tab.celldef_tab = self.celldef_tab
-        self.cell_customdata_tab.fill_gui(self.celldef_tab)
+        # self.cell_customdata_tab = CellCustomData()
+        # self.cell_customdata_tab.xml_root = self.xml_root
+        # self.cell_customdata_tab.celldef_tab = self.celldef_tab
+        # self.cell_customdata_tab.fill_gui(self.celldef_tab)
         self.celldef_tab.fill_custom_data_tab()
         
         self.user_params_tab = UserParams()
@@ -164,7 +164,7 @@ class PhysiCellXMLCreator(QWidget):
         tabWidget.addTab(self.config_tab,"Config Basics")
         tabWidget.addTab(self.microenv_tab,"Microenvironment")
         tabWidget.addTab(self.celldef_tab,"Cell Types")
-        tabWidget.addTab(self.cell_customdata_tab,"Cell Custom Data")
+        # tabWidget.addTab(self.cell_customdata_tab,"Cell Custom Data")
         tabWidget.addTab(self.user_params_tab,"User Params")
 
         vlayout.addWidget(tabWidget)
@@ -308,7 +308,7 @@ class PhysiCellXMLCreator(QWidget):
         self.config_tab.xml_root = self.xml_root
         self.microenv_tab.xml_root = self.xml_root
         self.celldef_tab.xml_root = self.xml_root
-        self.cell_customdata_tab.xml_root = self.xml_root
+        # self.cell_customdata_tab.xml_root = self.xml_root
         self.user_params_tab.xml_root = self.xml_root
 
         self.config_tab.fill_gui()
@@ -319,8 +319,8 @@ class PhysiCellXMLCreator(QWidget):
         # self.microenv_tab.fill_gui()
 
         # Do this before the celldef_tab
-        self.cell_customdata_tab.clear_gui(self.celldef_tab)
-        self.cell_customdata_tab.fill_gui(self.celldef_tab)
+        # self.cell_customdata_tab.clear_gui(self.celldef_tab)
+        # self.cell_customdata_tab.fill_gui(self.celldef_tab)
 
         # self.celldef_tab.clear_gui()
         self.celldef_tab.clear_custom_data_params()

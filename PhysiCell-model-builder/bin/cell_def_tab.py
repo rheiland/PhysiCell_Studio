@@ -160,7 +160,7 @@ class CellDef(QWidget):
         self.custom_data_name = []
         self.custom_data_value = []
         self.custom_data_units = []
-        self.custom_data_desc = []
+        self.custom_data_description = []
 
         self.scroll_params = QScrollArea()
 
@@ -2778,7 +2778,7 @@ class CellDef(QWidget):
         self.custom_data_name.clear()
         self.custom_data_value.clear()
         self.custom_data_units.clear()
-        self.custom_data_desc.clear()
+        self.custom_data_description.clear()
 
         idr = 0
         for idx in range(self.max_custom_data_rows):   # rwh/TODO - this should depend on how many in the .xml
@@ -2845,6 +2845,7 @@ class CellDef(QWidget):
             idr += 1
             desc_label = QLabel("Description (optional)")
             desc_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+            self.custom_data_description.append(w_desc)
 
             # glayout.addWidget(QLabel("Description (optional) --------->"), idr,0, 1,1) # w, row, column, rowspan, colspan
             glayout.addWidget(desc_label, idr,0, 1,1) # w, row, column, rowspan, colspan
@@ -2972,7 +2973,7 @@ class CellDef(QWidget):
         if len(vname) > 0:
             self.custom_data_value[idx].setReadOnly(False)
             self.custom_data_units[idx].setReadOnly(False)
-            # self.custom_data_description[idx].setReadOnly(False)
+            self.custom_data_description[idx].setReadOnly(False)
 
             self.custom_data_name[idx+1].setReadOnly(False)   # Crucial: enable the *next* var name slot as writable!
             # print("\n------- Enabling row (name) # ",idx+1, "as editable.")
@@ -5573,6 +5574,7 @@ class CellDef(QWidget):
             subelm.text = self.param_d[cdef]["secretion"][substrate]["net_export_rate"]
             subelm.tail = self.indent12
 
+
         # self.secretion_rate.setText(self.param_d[cdname]["secretion"][self.current_secretion_substrate]["secretion_rate"])
         # self.secretion_target.setText(self.param_d[cdname]["secretion"][self.current_secretion_substrate]["secretion_target"])
         # self.uptake_rate.setText(self.param_d[cdname]["secretion"][self.current_secretion_substrate]["uptake_rate"])
@@ -5581,30 +5583,48 @@ class CellDef(QWidget):
 
     #-------------------------------------------------------------------
     # Read values from the GUI widgets and generate/write a new XML
-    def fill_xml_custom_data(self,custom_data,cdef):
+    def fill_xml_custom_data(self, custom_data, cdef):
         print("------------------- fill_xml_custom_data():  self.custom_data_count = ", self.custom_data_count)
+        print(self.param_d[cdef]['custom_data'])
 				# <receptor units="dimensionless">1.0</receptor>
 				# <cargo_release_o2_threshold units="mmHg">10</cargo_release_o2_threshold>
 
                 # --------- update_custom_data_params():  self.param_d[cdname]['custom_data'] =  {'receptor': '1.0', 'cargo_release_o2_threshold': '10', 'damage_rate': '0.03333', 'repair_rate': '0.004167', 'drug_death_rate': '0.004167', 'damage': '0.0'}
 
+        print("values from GUI tab:")
         # for idx in range(self.custom_data_count):
-        for key in self.param_d[cdef]['custom_data'].keys():
-            print("    key=",key,",  len(key)=",len(key))
-            # vname = self.custom_data_name[idx].text()
-            # if vname:
-            if len(key) > 0:
-                # elm = ET.SubElement(custom_data, self.custom_data_name[idx].text())
-                # elm = ET.SubElement(custom_data, self.param_d[cdef][custom_data_name[idx].text())
-                elm = ET.SubElement(custom_data, key)
-                elm.text = self.param_d[cdef]['custom_data'][key]
-                # elm.text = self.custom_data_value[idx].text()
-                elm.tail = self.indent10
+        for idx in range(len(self.param_d[cdef]['custom_data'])):
+            name = self.custom_data_name[idx].text()
+            value = self.custom_data_value[idx].text()
+            units = self.custom_data_units[idx].text()
+            desc = self.custom_data_description[idx].text()
+            print(idx,name,value,units,desc)
 
-        # for idx in range(5):
-        #     elm = ET.SubElement(cdata, "foo")
-        #     elm.text = "42.0"
-        #     elm.tail = self.indent10
+            elm = ET.SubElement(custom_data, name,
+                    { "units":units,
+                      "description":desc } )
+
+            elm.text = self.param_d[cdef]['custom_data'][name]  # value for this var for this cell def
+            elm.tail = self.indent10
+
+        elm.tail = self.indent8   # back up 2 for the very last one
+
+        # for key in self.param_d[cdef]['custom_data'].keys():  # get name of custom data var
+        #     print("    key=",key,",  len(key)=",len(key))
+        #     # vname = self.custom_data_name[idx].text()
+        #     # if vname:
+        #     if len(key) > 0:
+        #         idx = self.master_custom_varname.index(key)
+        #         print('idx=',idx)
+        #         units = self.custom_data_units[idx].text()
+        #         desc = self.custom_data_description[idx].text()
+        #         elm = ET.SubElement(custom_data, key,
+        #             { "units":units,
+        #               "description":desc } )
+
+        #         elm.text = self.param_d[cdef]['custom_data'][key]
+        #         elm.tail = self.indent10
+        print('\n')
 
     #-------------------------------------------------------------------
     # Read values from the GUI widgets and generate/write a new XML
