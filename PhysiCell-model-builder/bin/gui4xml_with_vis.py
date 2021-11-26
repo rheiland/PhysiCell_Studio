@@ -163,6 +163,10 @@ class PhysiCellXMLCreator(QWidget):
 
         #------------------
         tabWidget = QTabWidget()
+	stylesheet = """
+            QTabBar::tab:selected {background: dodgerblue;}
+            """
+        tabWidget.setStyleSheet(stylesheet)
         tabWidget.addTab(self.config_tab,"Config Basics")
         tabWidget.addTab(self.microenv_tab,"Microenvironment")
         tabWidget.addTab(self.celldef_tab,"Cell Types")
